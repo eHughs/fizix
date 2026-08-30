@@ -1,59 +1,14 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Confirm your Trader Analytics email</title>
-  </head>
-  <body style="margin:0;background:#f3efe8;font-family:Inter,Segoe UI,Arial,sans-serif;color:#272321;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f3efe8;padding:32px 14px;">
-      <tr>
-        <td align="center">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;background:#ffffff;border:1px solid #e3ddd4;border-radius:20px;overflow:hidden;box-shadow:0 18px 50px rgba(49,40,31,.08);">
-            <tr>
-              <td style="height:6px;background:#d99525;font-size:0;line-height:0;">&nbsp;</td>
-            </tr>
-            <tr>
-              <td style="padding:34px 36px 18px;">
-                <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                  <tr>
-                    <td style="width:46px;height:46px;border-radius:13px;background:#f4b84a;text-align:center;vertical-align:middle;color:#211d1e;font-size:25px;font-weight:900;">↗</td>
-                    <td style="padding-left:13px;">
-                      <div style="font-size:16px;font-weight:800;letter-spacing:-.2px;color:#211d1e;">Trader Analytics</div>
-                      <div style="margin-top:3px;font-size:10px;font-weight:700;letter-spacing:1.7px;text-transform:uppercase;color:#8c8176;">Performance OS</div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:8px 36px 8px;">
-                <div style="font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#b87318;">Verify your account</div>
-                <h1 style="margin:12px 0 12px;font-size:28px;line-height:1.2;letter-spacing:-.7px;color:#211d1e;">Confirm your email address</h1>
-                <p style="margin:0;font-size:15px;line-height:1.7;color:#665d55;">You’re one step away from your private trading journal. Confirm <strong style="color:#302b28;">{{ .Email }}</strong> to activate your Trader Analytics account.</p>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:20px 36px 12px;">
-                <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#d99525;color:#241a0d;text-decoration:none;font-size:14px;font-weight:800;padding:14px 22px;border-radius:11px;box-shadow:0 8px 20px rgba(217,149,37,.22);">Confirm email address</a>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:18px 36px 30px;">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f8f5f0;border:1px solid #ebe5dc;border-radius:13px;">
-                  <tr>
-                    <td style="padding:15px 16px;font-size:12px;line-height:1.6;color:#756b62;">This verification protects your journal and performance history. If you didn’t create a Trader Analytics account, you can safely ignore this email.</td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:20px 36px;background:#231f1d;color:#aaa096;font-size:11px;line-height:1.6;">Trader Analytics · Turn trading data into actionable self-review.</td>
-            </tr>
-          </table>
-          <p style="margin:18px 0 0;font-size:11px;color:#948a80;">If the button doesn’t work, copy this link into your browser:<br /><span style="word-break:break-all;">{{ .ConfirmationURL }}</span></p>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="color-scheme" content="light"><title>Confirm your Trader Analytics account</title></head>
+<body style="margin:0;padding:0;background:#f4f0e9;font-family:Arial,'Segoe UI',sans-serif;color:#25211e;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Confirm your email to finish setting up Trader Analytics.</div>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f4f0e9;padding:32px 12px;"><tr><td align="center">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#ffffff;border:1px solid #e6ded3;border-radius:18px;overflow:hidden;">
+<tr><td style="height:6px;background:#d4932e;font-size:0;line-height:0;">&nbsp;</td></tr>
+<tr><td style="padding:30px 34px 18px;"><table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td style="width:44px;height:44px;background:#dfa143;border-radius:12px;text-align:center;font-size:24px;font-weight:900;color:#211d1a;">↗</td><td style="padding-left:12px;"><div style="font-size:17px;font-weight:800;color:#211d1a;">Trader Analytics</div><div style="margin-top:3px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#91857a;">Performance journal</div></td></tr></table></td></tr>
+<tr><td style="padding:8px 34px 10px;"><div style="font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#ad6f1d;">Account verification</div><h1 style="margin:10px 0 12px;font-size:28px;line-height:1.18;color:#211d1a;">Confirm your email address</h1><p style="margin:0;font-size:15px;line-height:1.7;color:#686057;">Confirm <strong style="color:#302a25;">{{ .Email }}</strong> to activate your private trading journal and performance dashboard.</p></td></tr>
+<tr><td style="padding:20px 34px 14px;"><a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#d4932e;color:#24190c;text-decoration:none;font-size:14px;font-weight:800;padding:14px 22px;border-radius:10px;">Confirm email address</a></td></tr>
+<tr><td style="padding:14px 34px 28px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#faf7f2;border:1px solid #eee6dc;border-radius:12px;"><tr><td style="padding:14px 16px;font-size:12px;line-height:1.6;color:#756b62;">This verification protects your trading data. If you did not create this account, you can safely ignore this message.</td></tr></table></td></tr>
+<tr><td style="padding:18px 34px;background:#26211e;font-size:11px;line-height:1.6;color:#b7aca1;">Trader Analytics · Structured review for better trading decisions.</td></tr>
+</table><p style="max-width:600px;margin:16px auto 0;font-size:11px;line-height:1.5;color:#8d8379;">Button not working? Copy this link into your browser:<br><span style="word-break:break-all;">{{ .ConfirmationURL }}</span></p>
+</td></tr></table></body></html>
