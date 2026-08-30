@@ -31,5 +31,8 @@ jobs:
       - name: Production build
         run: npm run build
 
+      - name: Verify Supabase fallback is bundled
+        run: grep -R -q "bekaoohyvuqrqezhcodj.supabase.co" out/_next/static
+
       - name: Cloudflare deployment dry run
         run: npx --yes wrangler@4.127.1 deploy --dry-run
