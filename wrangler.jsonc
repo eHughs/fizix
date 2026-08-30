@@ -4,6 +4,9 @@
   "compatibility_date": "2026-08-30",
   "compatibility_flags": ["nodejs_compat"],
   "main": "vinext/server/app-router-entry",
+  "build": {
+    "command": "npm run build"
+  },
   "assets": {
     "not_found_handling": "none"
   },
