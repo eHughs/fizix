@@ -8,7 +8,8 @@
     "start": "npm run build && wrangler dev",
     "typecheck": "tsc --noEmit",
     "verify": "npm run typecheck && npm run build && npx wrangler deploy --dry-run",
-    "deploy": "npx wrangler deploy"
+    "deploy": "npx wrangler deploy",
+    "email:apply": "node scripts/apply-supabase-email-templates.mjs"
   },
   "engines": {
     "node": ">=20.9.0"
