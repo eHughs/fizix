@@ -28,11 +28,8 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
-      - name: Next.js compatibility build
-        run: npm run build:next
-
-      - name: Clear generated Cloudflare output
-        run: rm -rf dist .wrangler/deploy
+      - name: Clear generated site output
+        run: rm -rf out
 
       - name: Exact Cloudflare command dry run
         run: npx wrangler deploy --dry-run
