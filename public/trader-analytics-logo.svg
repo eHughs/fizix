@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 628" role="img" aria-labelledby="title desc">
+  <title id="title">Trader Analytics logo</title>
+  <desc id="desc">Muted amber circle with a rising black market arrow.</desc>
+  <defs>
+    <clipPath id="circleClip"><circle cx="440" cy="314" r="274"/></clipPath>
+  </defs>
+  <g clip-path="url(#circleClip)">
+    <rect x="166" y="40" width="548" height="548" fill="#efa31d"/>
+    <path d="M192 75 639 588H166V40Z" fill="#ffae20"/>
+  </g>
+  <path d="M135 468 292 292 426 472 699 126" fill="none" stroke="#211d1e" stroke-width="47" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M607 148 715 119 717 224" fill="none" stroke="#211d1e" stroke-width="47" stroke-linecap="square" stroke-linejoin="miter"/>
+</svg>
