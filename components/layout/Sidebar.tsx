@@ -5,11 +5,12 @@ import {
   BookOpenCheck,
   CalendarDays,
   LayoutDashboard,
+  ListChecks,
   Settings,
   ShieldAlert,
   X,
-  ListChecks,
 } from "lucide-react";
+import BrandLogo from "@/components/BrandLogo";
 import SidebarItem from "@/components/layout/SidebarItem";
 
 interface SidebarProps {
@@ -45,20 +46,12 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         }`}
       >
         <div className="mb-7 flex items-center justify-between px-1">
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-sm font-black tracking-tight text-emerald-400">
-              TA
-            </div>
-            <div>
-              <p className="text-sm font-bold tracking-[-0.02em] text-slate-50">Trader Analytics</p>
-              <p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.18em] text-slate-600">Performance OS</p>
-            </div>
-          </div>
+          <BrandLogo size={42} compact />
 
           <button
             type="button"
             onClick={onClose}
-            className="grid h-9 w-9 place-items-center rounded-lg border border-slate-800 text-slate-400 transition hover:bg-slate-900 hover:text-slate-100 lg:hidden"
+            className="grid h-9 w-9 place-items-center rounded-lg border border-slate-800 text-slate-400 transition hover:border-amber-500/25 hover:bg-slate-900 hover:text-amber-400 lg:hidden"
             aria-label="Close sidebar"
           >
             <X size={18} />
@@ -73,7 +66,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
 
         <div className="mt-auto rounded-2xl border border-slate-800 bg-slate-900/55 p-4">
           <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-slate-300">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            <span className="h-2 w-2 rounded-full bg-amber-400" />
             Journal workspace
           </div>
           <p className="text-xs leading-5 text-slate-500">
