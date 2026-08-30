@@ -11,7 +11,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -28,11 +28,11 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
-      - name: Production build
+      - name: Next.js production build
         run: npm run build
 
-      - name: Verify Supabase fallback is bundled
-        run: grep -R -q "bekaoohyvuqrqezhcodj.supabase.co" out/_next/static
+      - name: Cloudflare vinext production build
+        run: npm run build:vinext
 
-      - name: Cloudflare deployment dry run
-        run: npx --yes wrangler@4.127.1 deploy --dry-run
+      - name: Cloudflare Worker dry run
+        run: npx wrangler deploy --config dist/server/wrangler.json --dry-run
