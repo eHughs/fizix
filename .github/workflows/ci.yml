@@ -31,8 +31,8 @@ jobs:
       - name: Next.js compatibility build
         run: npm run build:next
 
-      - name: Cloudflare vinext production build
-        run: npm run build
+      - name: Clear generated Cloudflare output
+        run: rm -rf dist
 
-      - name: Cloudflare deploy-path dry run
+      - name: Cloudflare cold deploy dry run
         run: npm run deploy -- --dry-run
