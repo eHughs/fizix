@@ -1,5 +1,6 @@
-import { Database, Palette, ShieldCheck, UserRound } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
+import ProfileSettings from "@/components/settings/ProfileSettings";
 
 export default function SettingsPage() {
   return (
@@ -7,25 +8,22 @@ export default function SettingsPage() {
       <PageHeader
         eyebrow="Workspace"
         title="Settings"
-        description="Manage account, profile, trading preferences, categories, theme, and export behavior from one place."
+        description="Manage the account and trading preferences that belong to your Trader Analytics workspace."
       />
 
-      <section className="grid gap-4 md:grid-cols-2">
-        {[
-          { icon: UserRound, title: "Profile & account", text: "Authentication is active now. User-owned profile records and account settings are added with the owner-based schema in Milestone 2." },
-          { icon: Database, title: "Trading preferences", text: "Default currency, session preferences, and data export controls will be stored per user instead of hardcoded in the interface." },
-          { icon: ShieldCheck, title: "Privacy & ownership", text: "Milestone 2 replaces the current shared anonymous trading model with user-specific Row Level Security policies." },
-          { icon: Palette, title: "Appearance", text: "The professional dark theme is the current baseline; user-selectable theme preferences are added in the settings milestone." },
-        ].map(({ icon: Icon, title, text }) => (
-          <article key={title} className="rounded-2xl border border-slate-800 bg-slate-950/65 p-5 shadow-lg shadow-black/10">
-            <div className="mb-4 grid h-10 w-10 place-items-center rounded-xl border border-slate-800 bg-slate-900 text-slate-400">
-              <Icon size={18} />
-            </div>
-            <h2 className="text-sm font-semibold text-slate-100">{title}</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-500">{text}</p>
-          </article>
-        ))}
-      </section>
+      <div className="grid gap-6 xl:grid-cols-[1fr_22rem]">
+        <ProfileSettings />
+
+        <aside className="h-fit rounded-2xl border border-emerald-500/15 bg-emerald-500/[0.045] p-5">
+          <div className="mb-4 grid h-10 w-10 place-items-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+            <ShieldCheck size={18} />
+          </div>
+          <h2 className="text-sm font-semibold text-slate-100">User-owned data is active</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-500">
+            Profile, strategy, leak, trade, and trade-leak rows are protected by owner-based Row Level Security in Supabase. The dashboard only receives rows belonging to the signed-in user.
+          </p>
+        </aside>
+      </div>
     </div>
   );
 }
