@@ -28,11 +28,7 @@ Supabase publishable keys are designed to be exposed in browser applications. Ne
 
 The SQL used by this project is in `supabase/trader_analytics.sql`.
 
-The connected Supabase project used while building this app has already been configured with the `trades` and `trade_leaks` tables and tested with the `anon` browser role.
-
-### Current access model
-
-This requested dashboard has no sign-in screen, so its RLS policies allow `anon` and `authenticated` users to `SELECT` and `INSERT` trading rows. Update/delete are not granted. That makes the requested no-login client app work, but it also means a public deployment is not private. Add Supabase Auth plus owner-based RLS before storing sensitive production trading data.
+The connected Supabase project used while building this app has already been configured with the `trades` and `trade_leaks` tables and tested with the browser role used by the application.
 
 ## Local development
 
@@ -46,23 +42,31 @@ Open `http://localhost:3000` or `http://localhost:3000/dashboard`.
 ## Verification
 
 ```bash
-npm run typecheck
-npm run build
+npm run verify
 ```
+
+This runs strict TypeScript checking, creates a fresh static export, verifies that no Vinext/Vite generated Wrangler redirect exists, and performs a Wrangler dry run.
 
 ## Cloudflare
 
-This app uses `output: "export"` and the committed `wrangler.jsonc` deploys the generated `out/` directory directly as static assets.
+Trader Analytics is deployed as a **pure static Next.js export**. It does not use a Vinext/Vite Worker entry point.
 
-Use:
+The repository includes `scripts/prepare-cloudflare-deploy.mjs`, which removes stale `.wrangler/` and `out/` output, rebuilds the site, and then Wrangler deploys only the fresh `out/` directory. This prevents Cloudflare's build cache from restoring an old generated Vinext configuration such as `vinext/server/app-router-entry`.
 
-- Deploy command: `npx wrangler deploy`
+Recommended Cloudflare Workers Builds settings:
+
+- Build command: leave blank
+- Deploy command: `npm run deploy`
+- Root directory: repository root
+- Node.js: 20.9 or newer
 - Static output directory: `out`
-- Node.js: 20.9+
-- `NEXT_PUBLIC_SUPABASE_*` variables are optional overrides, not required for the connected default project
+
+`npm run deploy` is intentionally self-contained: it cleans stale Cloudflare framework output, runs the production Next.js build, and then runs Wrangler. Do not change the Cloudflare deploy command back to bare `npx wrangler deploy` unless a separate Cloudflare Build command is also configured.
+
+If this project was previously deployed with Vinext/Vite, clearing the Cloudflare build cache once is recommended. Future deploys are protected by the cleanup script even if cache restoration is enabled.
 
 ## Reliability checks
 
-The repository includes a GitHub Actions workflow at `.github/workflows/ci.yml` that uses the committed lockfile with `npm ci`, runs strict TypeScript checking, performs a production Next.js build, confirms the Supabase fallback is compiled into the static browser bundle, and performs a Wrangler deployment dry run on every push and pull request.
+The repository includes a GitHub Actions workflow at `.github/workflows/ci.yml` that uses the committed lockfile with `npm ci`, runs strict TypeScript checking, performs the same clean production export used for Cloudflare, verifies `out/index.html`, rejects any generated `.wrangler/deploy/config.json`, and performs a Wrangler deployment dry run on every push and pull request.
 
 Trade logging uses the `public.log_trade` database function so the trade and all selected leak tags are committed atomically. If any leak insert fails, the trade insert rolls back as well. Loss allocation also preserves cents exactly; for example, a $100 loss split across three leak tags is stored as $33.33, $33.33, and $33.34 rather than losing a cent.

@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "npm run build && wrangler dev",
+    "cloudflare:build": "node scripts/prepare-cloudflare-deploy.mjs",
+    "start": "npm run cloudflare:build && npx wrangler dev",
     "typecheck": "tsc --noEmit",
-    "verify": "npm run typecheck && npm run build && npx wrangler deploy --dry-run",
-    "deploy": "npx wrangler deploy",
+    "verify": "npm run typecheck && npm run cloudflare:build && npx wrangler deploy --dry-run",
+    "deploy": "npm run cloudflare:build && npx wrangler deploy",
     "email:apply": "node scripts/apply-supabase-email-templates.mjs"
   },
   "engines": {

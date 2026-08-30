@@ -28,8 +28,13 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
-      - name: Clear generated site output
-        run: rm -rf out
+      - name: Clean Cloudflare production build
+        run: npm run cloudflare:build
 
-      - name: Exact Cloudflare command dry run
+      - name: Verify static deployment shape
+        run: |
+          test -f out/index.html
+          test ! -f .wrangler/deploy/config.json
+
+      - name: Wrangler deployment dry run
         run: npx wrangler deploy --dry-run

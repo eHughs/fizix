@@ -2,9 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "fizix",
   "compatibility_date": "2026-08-30",
-  "build": {
-    "command": "npm run build"
-  },
+  // Static Next.js export only. Do not point Wrangler at a Vinext/Vite Worker entry.
   "assets": {
     "directory": "./out",
     "not_found_handling": "single-page-application"
