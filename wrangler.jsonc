@@ -2,23 +2,12 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "fizix",
   "compatibility_date": "2026-08-30",
-  "build": {
-    "command": "npm run build"
-  },
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "vinext/server/app-router-entry",
   "assets": {
-    "directory": "./out",
-    "html_handling": "auto-trailing-slash",
-    "not_found_handling": "404-page"
+    "not_found_handling": "none"
   },
   "observability": {
     "enabled": true
   }
-,
-  "main": "vinext/server/fetch-handler"
-,
-  "cache": { "enabled": true }
-,
-  "images": { "binding": "IMAGES" }
-,
-  "kv_namespaces": [{ "binding": "VINEXT_KV_CACHE", "id": "<your-kv-namespace-id>" }]
 }
