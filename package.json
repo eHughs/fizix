@@ -13,8 +13,8 @@
     "start:vinext": "wrangler dev --config dist/server/wrangler.json",
     "typecheck": "tsc --noEmit",
     "verify": "npm run typecheck && npm run build:next && npm run build",
-    "deploy": "wrangler deploy --config dist/server/wrangler.json",
-    "deploy:vinext": "wrangler deploy --config dist/server/wrangler.json"
+    "deploy": "npm run build && wrangler deploy --config dist/server/wrangler.json",
+    "deploy:vinext": "npm run build && wrangler deploy --config dist/server/wrangler.json"
   },
   "engines": {
     "node": ">=20.9.0"
