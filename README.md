@@ -9,18 +9,20 @@ Dark-mode Next.js App Router trading journal and analytics dashboard backed by S
 - Playbook table grouped by strategy with trade count, win rate, average R:R, and net P&L.
 - Live in-page refresh after a trade is saved.
 - Tailwind CSS dark UI using slate, emerald, and rose accents.
-- Static Next.js export for a simple Cloudflare Pages deployment.
+- Static Next.js export for a simple Cloudflare deployment.
 
-## Environment variables
+## Supabase connection
 
-Create `.env.local` for local development or add these as Cloudflare build variables:
+`lib/supabase.ts` contains the connected project's public Supabase URL and **publishable** browser key as a fallback. This prevents Cloudflare static builds from shipping a disconnected dashboard when build-time environment variables are missing.
+
+You can still override the defaults for another deployment or Supabase project with:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_YOUR_KEY
 ```
 
-Use a Supabase **publishable** key in the browser. Never expose a secret/service-role key.
+Supabase publishable keys are designed to be exposed in browser applications. Never expose a secret key or legacy service-role key in client code.
 
 ## Supabase schema
 
@@ -48,22 +50,19 @@ npm run typecheck
 npm run build
 ```
 
-## Cloudflare Pages
+## Cloudflare
 
-This app uses `output: "export"`, so the Cloudflare deployment is static and does not require OpenNext/vinext.
+This app uses `output: "export"` and the committed `wrangler.jsonc` deploys the generated `out/` directory directly as static assets.
 
 Use:
 
-- Framework preset: **Next.js (Static HTML Export)** if available, otherwise no preset.
-- Build command: `npm run build`
-- Build output directory: `out`
-- Node.js: 20.9+ (Cloudflare's current Node 24 build image is fine)
-- Build variables: both `NEXT_PUBLIC_SUPABASE_*` values listed above
-
-Because `NEXT_PUBLIC_*` variables are compiled into the browser bundle, set them in Cloudflare **before** the production build.
+- Deploy command: `npx wrangler deploy`
+- Static output directory: `out`
+- Node.js: 20.9+
+- `NEXT_PUBLIC_SUPABASE_*` variables are optional overrides, not required for the connected default project
 
 ## Reliability checks
 
-The repository includes a GitHub Actions workflow at `.github/workflows/ci.yml` that uses the committed lockfile with `npm ci`, runs strict TypeScript checking, and performs a production Next.js build on every push and pull request.
+The repository includes a GitHub Actions workflow at `.github/workflows/ci.yml` that uses the committed lockfile with `npm ci`, runs strict TypeScript checking, performs a production Next.js build, confirms the Supabase fallback is compiled into the static browser bundle, and performs a Wrangler deployment dry run on every push and pull request.
 
 Trade logging uses the `public.log_trade` database function so the trade and all selected leak tags are committed atomically. If any leak insert fails, the trade insert rolls back as well. Loss allocation also preserves cents exactly; for example, a $100 loss split across three leak tags is stored as $33.33, $33.33, and $33.34 rather than losing a cent.
