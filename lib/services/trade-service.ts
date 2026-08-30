@@ -42,25 +42,25 @@ export interface TradePageResult {
 const SELECT_COLUMNS =
   "id,symbol,direction,strategy_tag,net_pnl,r_multiple,risk_reward,outcome,trade_date,trade_time,session,created_at";
 
-function applyFilters(
-  query: ReturnType<SupabaseClient["from"]>["select"] extends never ? never : any,
-  filters: TradeFilters,
-) {
-  let next = query;
+function sanitizeSearch(value: string) {
+  return value.replaceAll(",", " ").replaceAll("%", "").trim();
+}
 
-  const search = filters.search.trim();
-  if (search) {
-    const escaped = search.replaceAll(",", " ").trim();
-    next = next.or(`symbol.ilike.%${escaped}%,strategy_tag.ilike.%${escaped}%`);
-  }
-
-  if (filters.direction !== "all") next = next.eq("direction", filters.direction);
-  if (filters.strategy !== "all") next = next.eq("strategy_tag", filters.strategy);
-  if (filters.outcome !== "all") next = next.eq("outcome", filters.outcome);
-  if (filters.startDate) next = next.gte("trade_date", filters.startDate);
-  if (filters.endDate) next = next.lte("trade_date", filters.endDate);
-
-  return next;
+function normalizeRows(rows: Record<string, unknown>[]): TradeListItem[] {
+  return rows.map((row) => ({
+    id: String(row.id),
+    symbol: String(row.symbol),
+    direction: row.direction as TradeDirection,
+    strategy_tag: String(row.strategy_tag),
+    net_pnl: Number(row.net_pnl),
+    r_multiple: row.r_multiple == null ? null : Number(row.r_multiple),
+    risk_reward: row.risk_reward == null ? null : Number(row.risk_reward),
+    outcome: row.outcome == null ? null : (row.outcome as TradeOutcome),
+    trade_date: row.trade_date == null ? null : String(row.trade_date),
+    trade_time: row.trade_time == null ? null : String(row.trade_time),
+    session: row.session == null ? null : String(row.session),
+    created_at: String(row.created_at),
+  }));
 }
 
 export async function fetchTradePage(
@@ -72,25 +72,24 @@ export async function fetchTradePage(
 ): Promise<TradePageResult> {
   const from = Math.max(0, (page - 1) * pageSize);
   const to = from + pageSize - 1;
+  let query = supabase.from("trades").select(SELECT_COLUMNS, { count: "exact" });
 
-  let query = supabase
-    .from("trades")
-    .select(SELECT_COLUMNS, { count: "exact" });
+  const search = sanitizeSearch(filters.search);
+  if (search) query = query.or(`symbol.ilike.%${search}%,strategy_tag.ilike.%${search}%`);
+  if (filters.direction !== "all") query = query.eq("direction", filters.direction);
+  if (filters.strategy !== "all") query = query.eq("strategy_tag", filters.strategy);
+  if (filters.outcome !== "all") query = query.eq("outcome", filters.outcome);
+  if (filters.startDate) query = query.gte("trade_date", filters.startDate);
+  if (filters.endDate) query = query.lte("trade_date", filters.endDate);
 
-  query = applyFilters(query, filters)
+  const { data, error, count } = await query
     .order(sort.field, { ascending: sort.direction === "asc" })
     .range(from, to);
 
-  const { data, error, count } = await query;
   if (error) throw error;
 
   return {
-    rows: (data ?? []).map((row) => ({
-      ...row,
-      net_pnl: Number(row.net_pnl),
-      r_multiple: row.r_multiple == null ? null : Number(row.r_multiple),
-      risk_reward: row.risk_reward == null ? null : Number(row.risk_reward),
-    })) as TradeListItem[],
+    rows: normalizeRows((data ?? []) as Record<string, unknown>[]),
     count: count ?? 0,
   };
 }
@@ -101,19 +100,21 @@ export async function fetchFilteredTradesForExport(
   sort: TradeSort,
 ): Promise<TradeListItem[]> {
   let query = supabase.from("trades").select(SELECT_COLUMNS);
-  query = applyFilters(query, filters).order(sort.field, {
+
+  const search = sanitizeSearch(filters.search);
+  if (search) query = query.or(`symbol.ilike.%${search}%,strategy_tag.ilike.%${search}%`);
+  if (filters.direction !== "all") query = query.eq("direction", filters.direction);
+  if (filters.strategy !== "all") query = query.eq("strategy_tag", filters.strategy);
+  if (filters.outcome !== "all") query = query.eq("outcome", filters.outcome);
+  if (filters.startDate) query = query.gte("trade_date", filters.startDate);
+  if (filters.endDate) query = query.lte("trade_date", filters.endDate);
+
+  const { data, error } = await query.order(sort.field, {
     ascending: sort.direction === "asc",
   });
 
-  const { data, error } = await query;
   if (error) throw error;
-
-  return (data ?? []).map((row) => ({
-    ...row,
-    net_pnl: Number(row.net_pnl),
-    r_multiple: row.r_multiple == null ? null : Number(row.r_multiple),
-    risk_reward: row.risk_reward == null ? null : Number(row.risk_reward),
-  })) as TradeListItem[];
+  return normalizeRows((data ?? []) as Record<string, unknown>[]);
 }
 
 export async function fetchStrategyNames(supabase: SupabaseClient): Promise<string[]> {
