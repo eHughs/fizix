@@ -3,6 +3,7 @@
 import { Menu, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import UserMenu from "@/components/layout/UserMenu";
 
 interface TopbarProps {
@@ -34,7 +35,7 @@ export default function Topbar({ onOpenNavigation }: TopbarProps) {
         <button
           type="button"
           onClick={onOpenNavigation}
-          className="grid h-10 w-10 place-items-center rounded-xl border border-slate-800 bg-slate-950 text-slate-300 transition hover:border-slate-700 hover:text-white lg:hidden"
+          className="grid h-10 w-10 place-items-center rounded-xl border border-slate-800 bg-slate-950 text-slate-300 transition hover:border-amber-500/25 hover:text-amber-400 lg:hidden"
           aria-label="Open navigation"
         >
           <Menu size={19} />
@@ -47,12 +48,13 @@ export default function Topbar({ onOpenNavigation }: TopbarProps) {
 
         <Link
           href="/trades/new"
-          className="hidden h-10 items-center gap-2 rounded-xl bg-emerald-500 px-4 text-sm font-bold text-emerald-950 shadow-lg shadow-emerald-950/20 transition hover:bg-emerald-400 sm:inline-flex"
+          className="hidden h-10 items-center gap-2 rounded-xl bg-amber-500 px-4 text-sm font-bold text-amber-950 shadow-lg shadow-black/10 transition hover:bg-amber-400 sm:inline-flex"
         >
           <Plus size={17} strokeWidth={2.2} />
           New trade
         </Link>
 
+        <ThemeToggle />
         <UserMenu />
       </div>
     </header>
