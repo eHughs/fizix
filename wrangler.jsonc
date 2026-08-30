@@ -3,7 +3,7 @@
   "name": "fizix",
   "compatibility_date": "2026-08-30",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "dist/server/index.js",
+  "main": "./worker/index.ts",
   "build": {
     "command": "npm run build"
   },
