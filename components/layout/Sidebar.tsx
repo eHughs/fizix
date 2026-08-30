@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
+import DeveloperNavItem from "@/components/layout/DeveloperNavItem";
 import SidebarItem from "@/components/layout/SidebarItem";
 
 interface SidebarProps {
@@ -62,6 +63,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           {navigation.map((item) => (
             <SidebarItem key={item.href} {...item} onNavigate={onClose} />
           ))}
+          <DeveloperNavItem onNavigate={onClose} />
         </nav>
 
         <div className="mt-auto rounded-2xl border border-slate-800 bg-slate-900/55 p-4">
