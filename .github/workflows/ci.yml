@@ -28,11 +28,11 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
-      - name: Next.js production build
-        run: npm run build
+      - name: Next.js compatibility build
+        run: npm run build:next
 
       - name: Cloudflare vinext production build
-        run: npm run build:vinext
+        run: npm run build
 
-      - name: Cloudflare Worker dry run
-        run: npx wrangler deploy --config dist/server/wrangler.json --dry-run
+      - name: Cloudflare deploy-path dry run
+        run: npm run deploy -- --dry-run
