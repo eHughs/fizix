@@ -18,6 +18,7 @@ const titles: Record<string, string> = {
   "/leaks": "Leak Tracker",
   "/playbook": "Strategy Playbook",
   "/settings": "Settings",
+  "/developer": "Developer Console",
 };
 
 function resolveTitle(pathname: string) {
