@@ -6,7 +6,7 @@ import { DIRECTIONS, LEAK_TAGS, STRATEGIES, type Direction, type LeakTag, type S
 import { getSupabaseClient } from "@/lib/supabase";
 
 const inputClass =
-  "mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-3 text-sm text-slate-100 shadow-inner shadow-black/10 transition placeholder:text-slate-600 hover:border-slate-600 focus:border-emerald-400";
+  "mt-2 w-full rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-3 text-sm text-slate-100 shadow-inner shadow-black/10 transition duration-150 placeholder:text-slate-600 hover:border-slate-600 focus:border-emerald-400 focus:bg-slate-900";
 
 export default function TradeLogger() {
   const [symbol, setSymbol] = useState("");
@@ -63,48 +63,31 @@ export default function TradeLogger() {
       return;
     }
 
-    if (!Number.isFinite(entry) || entry < 0 || !Number.isFinite(exit) || exit < 0 || !Number.isFinite(pnl)) {
-      setMessage({ type: "error", text: "Entry, exit, and P&L must contain valid numbers." });
+    if (!Number.isFinite(entry) || entry <= 0 || !Number.isFinite(exit) || exit <= 0 || !Number.isFinite(pnl)) {
+      setMessage({ type: "error", text: "Entry and exit prices must be greater than zero, and P&L must be a valid number." });
       return;
     }
 
-    if (rr !== null && (!Number.isFinite(rr) || rr < 0)) {
-      setMessage({ type: "error", text: "Risk:Reward must be a positive number, such as 2 for 1:2." });
+    if (rr !== null && (!Number.isFinite(rr) || rr <= 0)) {
+      setMessage({ type: "error", text: "Risk:Reward must be greater than zero, such as 2 for 1:2." });
       return;
     }
 
     setSubmitting(true);
 
     try {
-      const { data: trade, error: tradeError } = await supabase
-        .from("trades")
-        .insert({
-          symbol: normalizedSymbol,
-          direction,
-          entry_price: entry,
-          exit_price: exit,
-          net_pnl: pnl,
-          strategy_tag: strategyTag,
-          risk_reward: rr,
-        })
-        .select("id")
-        .single();
+      const { error: saveError } = await supabase.rpc("log_trade", {
+        p_symbol: normalizedSymbol,
+        p_direction: direction,
+        p_entry_price: entry,
+        p_exit_price: exit,
+        p_net_pnl: pnl,
+        p_strategy_tag: strategyTag,
+        p_risk_reward: rr,
+        p_leak_tags: selectedLeaks,
+      });
 
-      if (tradeError) throw tradeError;
-
-      if (selectedLeaks.length > 0) {
-        const totalLoss = pnl < 0 ? Math.abs(pnl) : 0;
-        const allocatedLoss = totalLoss / selectedLeaks.length;
-
-        const leakRows = selectedLeaks.map((leakTag) => ({
-          trade_id: trade.id,
-          leak_tag: leakTag,
-          loss_amount: Number(allocatedLoss.toFixed(2)),
-        }));
-
-        const { error: leaksError } = await supabase.from("trade_leaks").insert(leakRows);
-        if (leaksError) throw new Error(`Trade saved, but leak tags failed to save: ${leaksError.message}`);
-      }
+      if (saveError) throw saveError;
 
       resetForm();
       setMessage({ type: "success", text: "Trade logged successfully. Analytics have been refreshed." });
@@ -169,7 +152,7 @@ export default function TradeLogger() {
             Entry price
             <input
               type="number"
-              min="0"
+              min="0.00000001"
               step="any"
               value={entryPrice}
               onChange={(event) => setEntryPrice(event.target.value)}
@@ -183,7 +166,7 @@ export default function TradeLogger() {
             Exit price
             <input
               type="number"
-              min="0"
+              min="0.00000001"
               step="any"
               value={exitPrice}
               onChange={(event) => setExitPrice(event.target.value)}
@@ -223,7 +206,7 @@ export default function TradeLogger() {
             Risk:Reward <span className="font-normal text-slate-500">(optional)</span>
             <input
               type="number"
-              min="0"
+              min="0.01"
               step="0.01"
               value={riskReward}
               onChange={(event) => setRiskReward(event.target.value)}
@@ -266,6 +249,7 @@ export default function TradeLogger() {
         {message ? (
           <div
             role="status"
+            aria-live="polite"
             className={`rounded-xl border px-4 py-3 text-sm leading-6 ${
               message.type === "success"
                 ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-300"
@@ -279,7 +263,7 @@ export default function TradeLogger() {
         <button
           type="submit"
           disabled={submitting}
-          className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-500 px-4 py-3 text-sm font-bold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-400 px-4 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-950/25 transition duration-150 hover:bg-emerald-300 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting ? "Saving trade…" : "Save trade"}
         </button>

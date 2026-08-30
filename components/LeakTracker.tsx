@@ -19,9 +19,10 @@ type LeakTotal = {
 export default function LeakTracker() {
   const [rows, setRows] = useState<LeakRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadLeaks = useCallback(async () => {
+  const loadLeaks = useCallback(async (showRefresh = false) => {
     const supabase = getSupabaseClient();
     if (!supabase) {
       setError("Supabase environment variables are missing.");
@@ -29,6 +30,7 @@ export default function LeakTracker() {
       return;
     }
 
+    if (showRefresh) setRefreshing(true);
     setError(null);
 
     const { data, error: queryError } = await supabase
@@ -38,12 +40,12 @@ export default function LeakTracker() {
 
     if (queryError) {
       setError(queryError.message);
-      setLoading(false);
-      return;
+    } else {
+      setRows((data ?? []) as LeakRow[]);
     }
 
-    setRows((data ?? []) as LeakRow[]);
     setLoading(false);
+    setRefreshing(false);
   }, []);
 
   useEffect(() => {
@@ -76,10 +78,11 @@ export default function LeakTracker() {
       action={
         <button
           type="button"
-          onClick={() => void loadLeaks()}
-          className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-400 transition hover:border-slate-600 hover:text-slate-200"
+          onClick={() => void loadLeaks(true)}
+          disabled={refreshing}
+          className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold text-slate-400 transition hover:border-slate-600 hover:bg-slate-900 hover:text-slate-200 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Refresh
+          {refreshing ? "Refreshing…" : "Refresh"}
         </button>
       }
     >
@@ -96,18 +99,16 @@ export default function LeakTracker() {
       ) : (
         <div className="space-y-6">
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Top-cost mistake</p>
+            <div className="rounded-xl border border-slate-800 bg-slate-900/65 p-4 shadow-inner shadow-black/10">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Top-cost mistake</p>
               <p className="mt-2 text-lg font-semibold text-slate-100">
                 {topMistake && topMistake.loss > 0 ? topMistake.tag : "No losses yet"}
               </p>
-              <p className="mt-1 text-2xl font-bold tabular-nums text-rose-400">
-                {formatCurrency(topMistake?.loss ?? 0)}
-              </p>
+              <p className="mt-1 text-2xl font-bold tabular-nums text-rose-400">{formatCurrency(topMistake?.loss ?? 0)}</p>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Tracked leak cost</p>
+            <div className="rounded-xl border border-slate-800 bg-slate-900/65 p-4 shadow-inner shadow-black/10">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Tracked leak cost</p>
               <p className="mt-2 text-lg font-semibold text-slate-100">All leak tags</p>
               <p className="mt-1 text-2xl font-bold tabular-nums text-slate-200">{formatCurrency(totalLeakCost)}</p>
             </div>
@@ -123,9 +124,9 @@ export default function LeakTracker() {
                     <span className="font-medium text-slate-300">{item.tag}</span>
                     <span className="font-semibold tabular-nums text-rose-400">{formatCurrency(item.loss)}</span>
                   </div>
-                  <div className="h-2.5 overflow-hidden rounded-full bg-slate-800" aria-hidden="true">
+                  <div className="h-2.5 overflow-hidden rounded-full bg-slate-800/90" aria-hidden="true">
                     <div
-                      className="h-full rounded-full bg-rose-500 transition-[width] duration-500"
+                      className="h-full rounded-full bg-gradient-to-r from-rose-500 to-rose-400 transition-[width] duration-500"
                       style={{ width: `${width}%` }}
                     />
                   </div>
@@ -133,6 +134,12 @@ export default function LeakTracker() {
               );
             })}
           </div>
+
+          {totalLeakCost === 0 ? (
+            <p className="rounded-xl border border-dashed border-slate-800 bg-slate-900/30 px-4 py-3 text-xs leading-5 text-slate-500">
+              No losing leak cost has been recorded yet. Tag mistakes on trades and the cost breakdown will appear here.
+            </p>
+          ) : null}
         </div>
       )}
     </Panel>
