@@ -64,6 +64,6 @@ Because `NEXT_PUBLIC_*` variables are compiled into the browser bundle, set them
 
 ## Reliability checks
 
-The repository includes a GitHub Actions workflow at `.github/workflows/ci.yml` that installs the pinned dependencies, runs strict TypeScript checking, and performs a production Next.js build on every push and pull request.
+The repository includes a GitHub Actions workflow at `.github/workflows/ci.yml` that uses the committed lockfile with `npm ci`, runs strict TypeScript checking, and performs a production Next.js build on every push and pull request.
 
 Trade logging uses the `public.log_trade` database function so the trade and all selected leak tags are committed atomically. If any leak insert fails, the trade insert rolls back as well. Loss allocation also preserves cents exactly; for example, a $100 loss split across three leak tags is stored as $33.33, $33.33, and $33.34 rather than losing a cent.
