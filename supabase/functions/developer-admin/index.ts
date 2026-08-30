@@ -156,6 +156,9 @@ Deno.serve(async (req: Request) => {
     if (action === "update_email") {
       const email = String(body.email ?? "").trim().toLowerCase();
       if (!/^\S+@\S+\.\S+$/.test(email) || email.length > 320) return json({ error: "Valid email required" }, 400);
+      if (userId === ADMIN_USER_ID && email !== ADMIN_EMAIL) {
+        return json({ error: "The developer account email is locked because it controls developer-console access." }, 400);
+      }
       const confirm = body.confirm === true;
       const { data, error } = await adminClient.auth.admin.updateUserById(userId, {
         email,
