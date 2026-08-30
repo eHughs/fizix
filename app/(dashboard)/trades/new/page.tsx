@@ -1,15 +1,15 @@
-import TradeLogger from "@/components/TradeLogger";
 import PageHeader from "@/components/layout/PageHeader";
+import TradeForm from "@/components/trade/TradeForm";
 
 export default function NewTradePage() {
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-6xl">
       <PageHeader
         eyebrow="Trade journal"
         title="Log a trade"
-        description="Capture execution details, realized P&L, strategy context, and mistakes while the trade is still fresh."
+        description="Capture execution, risk, strategy, session context, review notes, screenshot, and recurring mistakes in one complete journal entry."
       />
-      <TradeLogger />
+      <TradeForm />
     </div>
   );
 }
