@@ -11,12 +11,7 @@ interface SidebarItemProps {
   onNavigate?: () => void;
 }
 
-export default function SidebarItem({
-  href,
-  label,
-  icon: Icon,
-  onNavigate,
-}: SidebarItemProps) {
+export default function SidebarItem({ href, label, icon: Icon, onNavigate }: SidebarItemProps) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(`${href}/`);
 
@@ -34,8 +29,8 @@ export default function SidebarItem({
       <span
         className={`grid h-8 w-8 place-items-center rounded-lg border transition-colors ${
           active
-            ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
-            : "border-slate-800 bg-slate-950 text-slate-500 group-hover:text-slate-300"
+            ? "border-amber-500/25 bg-amber-500/10 text-amber-400"
+            : "border-slate-800 bg-slate-950 text-slate-500 group-hover:border-amber-500/15 group-hover:text-amber-400"
         }`}
       >
         <Icon size={17} strokeWidth={1.9} aria-hidden="true" />
