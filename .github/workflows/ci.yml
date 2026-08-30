@@ -32,7 +32,7 @@ jobs:
         run: npm run build:next
 
       - name: Clear generated Cloudflare output
-        run: rm -rf dist
+        run: rm -rf dist .wrangler/deploy
 
-      - name: Cloudflare cold deploy dry run
-        run: npm run deploy -- --dry-run
+      - name: Exact Cloudflare command dry run
+        run: npx wrangler deploy --dry-run
